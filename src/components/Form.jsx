@@ -12,7 +12,7 @@ function Form() {
   });
 
   const generatePassword = () => {
-    const length = formData.length || 12; // Default length for the password or use the length from the form
+    const length = formData.length || 5; // Default length for the password or use the length from the form
     const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
     const numberChars = "0123456789";
@@ -75,8 +75,8 @@ function Form() {
   return (
     <div className="w-full p-5 flex flex-col items-center justify-center gap-5">
       <div className="flex border rounded-lg shadow w-full md:w-1/2 h-100% p-5 items-center justify-between overflow-hidden">
-        <h1>{password ? password : <span className="text-slate-400"> Please wi8 for the selection</span> }</h1>
-        <div onClick={copyToClipboard} className="hover:pointer hover:text-green-700 font-bold border p-1 px-4 rounded">Copy</div>
+        <h1 className="font-bold text-lg">{password ? password : <span className="text-slate-400 text-xs font-normal"> Please wi8 for the selection</span> }</h1>
+        <div onClick={copyToClipboard} className="bg-green-500 text-white font-bold border hover:cursor-pointer p-1 px-4 rounded">Copy</div>
       </div>
       <div className="border rounded-lg shadow md:w-1/2 h-100% p-5">
         <div className="flex my-3 flex-col items-start">
@@ -100,7 +100,7 @@ function Form() {
                   name="length"
                   min="5"
                   max="50"
-                  placeholder="Minimum 5 length mandatory"
+                  placeholder="Minimum length 5"
                   className="border rounded p-1 w-full outline-none placeholder:text-[12px] ps-2"
                 />
               </div>
@@ -172,7 +172,7 @@ function Form() {
             <div className="w-full">
               <button
                 type="submit"
-                className="border p-2 text-xs px-4 bg-yellow-600 text-white rounded w-full"
+                className="border p-2 text-xs px-4 bg-green-600 text-white rounded w-full"
               >
                 Submit
               </button>
