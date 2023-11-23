@@ -1,0 +1,56 @@
+  const [password, setPassword] = useState();
+  const [formData, setFormData] = useState({
+    length: "",
+    uppercase: "",
+    lowercase: "",
+    numbers: "",
+    specialChars: "",
+  });
+
+  const changeHandler = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    if (type === "checkbox") {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: checked ? value : "",
+      }));
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      console.log(formData);
+
+      const response = await fetch("http://localhost:4000/generate-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      console.log(data?.password);
+      setPassword(data?.password);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const copyToClipboard = () => {
+    if (password) {
+      navigator.clipboard.writeText(password)
+        .then(() => {
+          console.log("Password copied to clipboard!");
+          // Optional: You can show a success message or perform additional actions upon successful copy.
+        })
+        .catch((error) => {
+          console.error("Unable to copy password to clipboard: ", error);
+        });
+    }
+  };

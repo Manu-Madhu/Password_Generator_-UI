@@ -1,63 +1,76 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 function Form() {
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState("");
   const [formData, setFormData] = useState({
     length: "",
-    uppercase: "",
-    lowercase: "",
-    numbers: "",
-    specialChars: "",
+    uppercase: false,
+    lowercase: false,
+    numbers: false,
+    specialChars: false,
   });
 
-  const changeHandler = (e) => {
-    const { name, value, type, checked } = e.target;
+  const generatePassword = () => {
+    const length = formData.length || 12; // Default length for the password or use the length from the form
+    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+    const numberChars = "0123456789";
+    const specialChars = "!@#$%^&*()-_+=~";
 
+    let characters = "";
+    if (formData.uppercase) characters += uppercaseChars;
+    if (formData.lowercase) characters += lowercaseChars;
+    if (formData.numbers) characters += numberChars;
+    if (formData.specialChars) characters += specialChars;
+
+    if (!characters) {
+      // alert("Please select at least one character type.");
+      toast.error("Please select at least one character type.")
+      return;
+    }
+
+    let newPassword = "";
+    for (let i = 0; i < length; i++) {
+      newPassword += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    setPassword(newPassword);
+  };
+
+  const changeHandler = (e) => {
+    const { name, type, checked } = e.target;
     if (type === "checkbox") {
       setFormData((prevData) => ({
         ...prevData,
-        [name]: checked ? value : "",
+        [name]: checked,
       }));
     } else {
       setFormData({
         ...formData,
-        [name]: value,
+        [name]: e.target.value,
       });
     }
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    try {
-      console.log(formData);
-
-      const response = await fetch("http://localhost:4000/generate-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      console.log(data?.password);
-      setPassword(data?.password);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const copyToClipboard = () => {
     if (password) {
-      navigator.clipboard.writeText(password)
+      navigator.clipboard
+        .writeText(password)
         .then(() => {
           console.log("Password copied to clipboard!");
-          // Optional: You can show a success message or perform additional actions upon successful copy.
+          toast.success("Password copied to clipboard!")
         })
         .catch((error) => {
           console.error("Unable to copy password to clipboard: ", error);
+          toast.error("Unable to copy password to clipboard")
         });
     }
   };
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+    generatePassword();
+  };
 
   return (
     <div className="w-full p-5 flex flex-col items-center justify-center gap-5">
